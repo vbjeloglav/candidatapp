@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="CandidatApp.Views.InterviewList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CandidatApp.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="0,0,5,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="gridInterviews" 
+                  ItemsSource="{Binding Interviews}"
+                  IsReadOnly="True" 
+                  AutoGenerateColumns="False"                  
+                  RowHeight="40">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden"/>
+                <DataGridTextColumn Header="Vrijeme" Binding="{Binding StartTime}" Width="*"/>
+                <DataGridTextColumn Header="Kandidat" Binding="{Binding CandidateName}" Width="2*"/>
+                <DataGridTextColumn Header="Pozicija" Binding="{Binding ApplicationName}" Width="2*"/>
+                <DataGridTextColumn Header="Vrijeme prijave" Binding="{Binding AppliedAt}" Width="*"/>
+                <DataGridTextColumn Header="Izvor" Binding="{Binding Source}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
