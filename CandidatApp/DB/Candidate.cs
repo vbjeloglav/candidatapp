@@ -14,6 +14,7 @@ public partial class Candidate
     public string Email { get; set; } = null!;
 
     public string? Phone { get; set; }
+
 	public string Role { get; set; }
 
 	public short? ExpirienceMonths { get; set; }
