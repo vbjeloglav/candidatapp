@@ -3,10 +3,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CandidatApp.ViewModels.Commands;
+using Microsoft.Extensions.DependencyInjection;
 
 public class MainViewModel : INotifyPropertyChanged
 {
-	private object _currentViewModel;
+    private readonly IServiceProvider _serviceProvider;
+    private object _currentViewModel;
 	public object CurrentViewModel
 	{
 		get => _currentViewModel;
@@ -21,14 +23,21 @@ public class MainViewModel : INotifyPropertyChanged
 	public ICommand ShowOpenPositionsCommand { get; }
 	public ICommand ShowInterviewsCommand { get; }
 
-	public MainViewModel()
-	{
-		ShowCandidatesCommand = new RelayCommand(o => CurrentViewModel = new CandidateViewModel());
-		ShowOpenPositionsCommand = new RelayCommand(o => CurrentViewModel = new PositionsViewModel());
-		ShowInterviewsCommand = new RelayCommand(o => CurrentViewModel = new InterviewViewModel());
-	}
+    public MainViewModel(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
 
-	public event PropertyChangedEventHandler PropertyChanged;
+        ShowCandidatesCommand = new RelayCommand(_ =>
+            CurrentViewModel = _serviceProvider.GetRequiredService<CandidateViewModel>());
+
+        ShowOpenPositionsCommand = new RelayCommand(_ =>
+            CurrentViewModel = _serviceProvider.GetRequiredService<PositionsViewModel>());
+
+        ShowInterviewsCommand = new RelayCommand(_ =>
+            CurrentViewModel = _serviceProvider.GetRequiredService<InterviewViewModel>());
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
 	protected void OnPropertyChanged([CallerMemberName] string name = null)
 	{

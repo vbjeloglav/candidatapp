@@ -1,50 +1,29 @@
-﻿using CandidatApp.DB;
-using System;
-using System.Collections.Generic;
+﻿using CandidatApp.Models.Interviews;
+using CandidatApp.Services.Interfaces;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CandidatApp.ViewModels
 {
 	public class InterviewViewModel
-	{
-		public ObservableCollection<InterviewModel> Interviews { get; set; }
+    {
+        private readonly IInterviewService _interviewService;
 
-		public InterviewViewModel()
-		{
-			using (var db = new CandidatappContext())
-			{
-				Interviews = new ObservableCollection<InterviewModel>(db.Interviews.Select(x => new InterviewModel
-				{
-					StartTime = DateTime.Now,
-					CandidateId = x.CandidateId,
-					CandidateName = x.Candidate.Name +  " " + x.Candidate.Surname,
-					Phone = x.Candidate.Phone,
-					Email = x.Candidate.Email,
-					ApplicationId = x.ApplicationId,
-					ApplicationName = x.Application.Position.Name,
-					AppliedAt = x.Application.AppliedAt,
-					Source = x.Application.Source
-				}).ToList());
-			}
-		}
-	}
+        public ObservableCollection<InterviewListModel> Interviews { get; } = new();
 
-	public class InterviewModel
-	{
-		public DateTime? StartTime { get; set; }
+        public InterviewViewModel(IInterviewService interviewService)
+        {
+            _interviewService = interviewService;
+            Load();
+        }
 
-		public int CandidateId { get; set; }
-		public string CandidateName { get; set; }
-		public string? Phone { get; set; }
-		public string Email { get; set; }
-		public string? Note { get; set; }
-		public string? Source { get; set; }
-		public int ApplicationId { get; set; }
-		public string ApplicationName { get; set; }
-		public string PositionName { get; set; }
-		public DateTime AppliedAt { get; set; }
-	}
+        private async void Load()
+        {
+            var items = await _interviewService.GetInterviewsAsync();
+
+            Interviews.Clear();
+
+            foreach (var item in items)
+                Interviews.Add(item);
+        }
+    }
 }

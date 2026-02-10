@@ -1,19 +1,29 @@
 ﻿using CandidatApp.DB;
+using CandidatApp.Services.Interfaces;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace CandidatApp.ViewModels
 {
-	public class CandidateViewModel
-	{
-		public ObservableCollection<Candidate> Candidates { get; set; }
+    public class CandidateViewModel
+    {
+        private readonly ICandidateService _candidateService;
 
-		public CandidateViewModel()
-		{
-			using (var db = new CandidatappContext())
-			{
-				Candidates = new ObservableCollection<Candidate>(db.Candidates.ToList());
-			}
-		}
-	}
+        public ObservableCollection<Candidate> Candidates { get; } = new();
+
+        public CandidateViewModel(ICandidateService candidateService)
+        {
+            _candidateService = candidateService;
+            LoadCandidates();
+        }
+
+        private async void LoadCandidates()
+        {
+            var items = await _candidateService.GetCandidatesAsync();
+
+            Candidates.Clear();
+
+            foreach (var c in items)
+                Candidates.Add(c);
+        }
+    }
 }

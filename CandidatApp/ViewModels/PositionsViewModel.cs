@@ -1,34 +1,27 @@
-﻿using CandidatApp.DB;
+﻿using CandidatApp.Models.Positions;
 using System.Collections.ObjectModel;
 
 namespace CandidatApp.ViewModels
 {
-	public class PositionsViewModel
-	{
-		public ObservableCollection<PositionModel> Positions { get; set; }
+    public class PositionsViewModel
+    {
 
-		public PositionsViewModel()
-		{
-			using (var db = new CandidatappContext())
-			{
-				Positions = new ObservableCollection<PositionModel>
-					(db.Positions.Select(x =>
-					new PositionModel
-					{
-						Name = x.Name,
-						DatePosted = x.DatePosted,
-						Status = x.Status.Name,
-						NumberOfApplications = x.Applications.Count
-					}).ToList());
-			}
-		}
-	}
+        private readonly IPositionService _positionService;
 
-	public class PositionModel
-	{
-		public string Name { get; set; }
-		public DateOnly? DatePosted { get; set; }
-		public string Status { get; set; }
-		public int NumberOfApplications { get; set; }
-	}
+        public ObservableCollection<PositionListModel> Positions { get; } = new();
+
+        public PositionsViewModel(IPositionService positionService)
+        {
+            _positionService = positionService;
+            LoadPositions();
+        }
+
+        private async void LoadPositions()
+        {
+            var items = await _positionService.GetPositionsAsync();
+            Positions.Clear();
+            foreach (var p in items)
+                Positions.Add(p);
+        }
+    }
 }
