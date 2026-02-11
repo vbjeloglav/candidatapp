@@ -7,16 +7,18 @@ namespace CandidatApp.Services
 {
     public class InterviewService : IInterviewService
     {
-        private readonly CandidatappContext _db;
+        private readonly IDbContextFactory<CandidatappContext> _contextFactory;
 
-        public InterviewService(CandidatappContext db)
+        public InterviewService(IDbContextFactory<CandidatappContext> contextFactory)
         {
-            _db = db;
+			_contextFactory = contextFactory;
         }
 
         public async Task<List<InterviewListModel>> GetInterviewsAsync()
         {
-            return await _db.Interviews
+            using var context = _contextFactory.CreateDbContext(); 
+
+            return await context.Interviews
                 .Include(x => x.Candidate)
                 .Include(x => x.Application)
                     .ThenInclude(a => a.Position)

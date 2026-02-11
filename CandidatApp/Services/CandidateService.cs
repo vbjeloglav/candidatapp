@@ -5,19 +5,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CandidatApp.Services
 {
-    public class CandidateService : ICandidateService
-    {
-        private readonly CandidatappContext _db;
+	public class CandidateService : ICandidateService
+	{
+		private readonly IDbContextFactory<CandidatappContext> _contextFactory;
 
-        public CandidateService(CandidatappContext db)
-        {
-            _db = db;
-        }
+		public CandidateService(IDbContextFactory<CandidatappContext> contextFactory)
+		{
+			_contextFactory = contextFactory;
+		}
 
-        public async Task<List<Candidate>> GetCandidatesAsync()
-        {
-            return await _db.Candidates.ToListAsync();
-        }
-    }
+		public async Task<List<Candidate>> GetCandidatesAsync()
+		{
+			using var context = _contextFactory.CreateDbContext();
+
+			return await context.Candidates.ToListAsync();
+		}
+	}
 
 }

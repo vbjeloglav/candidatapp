@@ -2,6 +2,7 @@
 using CandidatApp.Services;
 using CandidatApp.Services.Interfaces;
 using CandidatApp.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
@@ -19,7 +20,9 @@ namespace CandidatApp
         {
             var services = new ServiceCollection();
 
-            services.AddDbContext<CandidatappContext>();
+			services.AddDbContextFactory<CandidatappContext>(options =>
+						options.UseSqlServer("Server=.;Database=candidatapp;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;"));
+			
             services.AddTransient<MainViewModel>(); 
             
             services.AddScoped<ICandidateService, CandidateService>();

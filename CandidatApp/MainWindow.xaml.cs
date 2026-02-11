@@ -15,11 +15,6 @@ namespace CandidatApp
 			DataContext = App.Services.GetRequiredService<MainViewModel>();
         }
 
-		private void Window_Loaded(Object sender, RoutedEventArgs e)
-		{
-			using (CandidatappContext db = new CandidatappContext())
-			{ }
-		}
 		private void OpenOutlook_Click(object sender, RoutedEventArgs e)
 		{
 			try
